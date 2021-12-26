@@ -41,7 +41,8 @@ defmodule OffBroadway.Redis.RedixClient do
   end
 
   @impl true
-  def receive_messages(demand, opts) do
+  def receive_messages(demand, ack_ref) do
+    opts = get_config(ack_ref)
     receive_messages_opts = put_max_number_of_items(opts.receive_messages_opts, demand)
 
     opts.redis_instance
@@ -50,7 +51,7 @@ defmodule OffBroadway.Redis.RedixClient do
       opts.working_list_name,
       receive_messages_opts[:max_number_of_items]
     )
-    |> wrap_received_messages(opts.ack_ref)
+    |> wrap_received_messages(ack_ref)
   end
 
   @impl true
